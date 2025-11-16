@@ -14,7 +14,8 @@ def main():
     # Process the input data
     process_input()
 
-
+## Parses the input file and executes commands line by line
+# Function for processing input commands from a file
 def process_input():
     filename = sys.argv[1]
     with open(filename, "r+") as f:
@@ -104,12 +105,10 @@ def create_user(user_id, name):
         Users[user_id] = name
         print("User created:", user_id, name)
 
-    # Displays user information.
-    # - user_id: Must exist.
-    # Errors:
-    # - ERROR: User not found.
-
-
+# Displays user information.
+# - user_id: Must exist.
+# Errors:
+# - ERROR: User not found.
 def read_user(user_id):
     # TODO :
     if user_id in Users:
@@ -117,12 +116,12 @@ def read_user(user_id):
     else:
         print("ERROR: User not found.")
 
+
 # - user_id: Must exist.
 # - new_name: Non-empty string.
 # Errors:
 # - ERROR: User not found.
 # - ERROR: Invalid new name.
-
 def update_user(user_id, new_name):
     if user_id in Users:
         if new_name:
@@ -134,12 +133,10 @@ def update_user(user_id, new_name):
         print("ERROR: User not found.")
 
 
-
 # Deletes a user and associated accounts.
 # - user_id: Must exist.
 # Errors:
 # - ERROR: User not found.
-
 def delete_user(user_id):
     if user_id in Users:
         del Users[user_id]
@@ -231,10 +228,6 @@ def balance(account_id):
         print("ERROR: Account not found.")
         return 0.0
 
-# Displays the transaction history of the specified account.
-# - account_id: Must exist.
-# Errors:
-# - ERROR: Account not found.
 
 def history(account_id):
     if account_id in BankAccounts:
@@ -267,10 +260,6 @@ def add_account(user_id, account_id):
         print("ERROR: User not found.")
 
 
-# Removes an existing bank account.
-# - account_id: Must exist.
-# Errors:
-# - ERROR: Account not found.
 def remove_account(account_id):
     if account_id in BankAccounts:
         del BankAccounts[account_id]
