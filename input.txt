@@ -1,0 +1,9 @@
+help ACC123 500.00
+withdraw ACC123 100.00
+transfer ACC123 ACC456 50.00
+balance ACC123
+history ACC123
+create_user U001 Alice
+read_user U001
+update_user U001 Alicia
+delete_user U001

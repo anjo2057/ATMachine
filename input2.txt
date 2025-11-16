@@ -1,0 +1,13 @@
+create_user U0001 Alice
+create_user U0002 Engla
+read_user U0001
+update_user U0001 OLOF
+read_user U0001
+add_account U0001 AC001
+deposit AC001 1000
+withdraw AC001 500
+add_account U0002 AC002
+transfer AC001 AC002 250
+balance AC001
+balance AC002
+history AC001
