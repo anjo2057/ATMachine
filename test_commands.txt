@@ -1,0 +1,15 @@
+help
+create_user U0001 Alice
+read_user U0001
+update_user U0001 Alicia
+delete_user U0001
+create_user U0001 Alice
+add_account U0001 AC001
+deposit AC001 500.00
+withdraw AC001 100.00
+add_account U0001 AC002
+transfer AC001 AC002 50.00
+balance AC001
+history AC001
+remove_account AC002
+hejsansvejsa

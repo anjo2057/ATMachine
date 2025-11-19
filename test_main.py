@@ -212,6 +212,8 @@ class TestMain(unittest.TestCase):
 
         bank.clear_bank()
 
+    ## TC0010
+    # Testing help 
     def test_help(self): 
         bank = BankSystem() 
         # Just to see that help runs without errors
@@ -219,6 +221,17 @@ class TestMain(unittest.TestCase):
         bank.clear_bank()
 
     
+
+    def test_parser(self):
+        bank = BankSystem() 
+
+        # Testing processing of commands from a file
+        bank.process_file("test_commands.txt")
+
+
+        bank.clear_bank()
+
+
 
 
 if __name__ == "__main__":
