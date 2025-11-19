@@ -54,7 +54,6 @@ class BankSystem:
         else:
             print("ERROR: User not found.")
 
-
     # Deletes a user and associated accounts.
     # - user_id: Must exist.
     # Errors:
@@ -72,7 +71,6 @@ class BankSystem:
             print("User deleted:", user_id)
         else:
             print("ERROR: User not found.")
-
 
     ## NOT DESRCRIBED IN SPEC BUT NEEDED FOR TESTS
     # Adds a new bank account for an existing user.
@@ -107,7 +105,6 @@ class BankSystem:
         else:
             print("ERROR: Account not found.")
 
-
     # Adds the specified amount to the account balance.
     # - account_id: 5–10 alphanumeric characters.
     # - amount: Decimal number between 0.01 and 1,000,000.
@@ -131,20 +128,18 @@ class BankSystem:
         else:
             print("ERROR: Account not found")
 
-    
     # Displays the current balance of the specified account.
     # - account_id: Must exist.
     # Errors:
     # - ERROR: Account not found.
-    def balance(self, account_id: str) -> float:
+    def balance(self, account_id: str) -> float | None:
         if account_id in self.accounts:
             bal = float(self.accounts[account_id]["balance"])
             print(f"Account {account_id} balance: {bal}")
             return bal
         else:
             print("ERROR: Account not found.")
-            return 0.0
-
+            return None
 
     # Displays the transaction history of the specified account.
     # - account_id: Must exist.
@@ -171,14 +166,14 @@ class BankSystem:
             try:
                 amt = float(amount)
                 bal = self.balance(account_id)
-                if 0.01 <= amt <= bal:
+                if bal is not None and 0.01 <= amt <= bal:
                     self.accounts[account_id]["balance"] -= amt
                     self.accounts[account_id]["history"].append(f"Withdraw: {amt}")
                     print(
                         f"Withdrew {amt} from account {account_id}. New balance: {self.accounts[account_id]['balance']}"
                     )
                 else:
-                    if amt > bal:
+                    if bal is not None and amt > bal:
                         print("ERROR: insufficient funds.")
                     if amt < 0.01:
                         print("ERROR: Invalid amount")
@@ -200,9 +195,41 @@ class BankSystem:
         if source_id == dest_id:
             print("ERROR: Source and destination cannot be the same.")
             return
-        self.withdraw(source_id, amount)
-        self.deposit(dest_id, amount)
 
+        # Validate accounts exist
+        if source_id not in self.accounts:
+            print("ERROR: Account not found.")
+            return
+        if dest_id not in self.accounts:
+            print("ERROR: Destination account not found.")
+            return
+
+        # Validate amount
+        try:
+            amt = float(amount)
+        except ValueError:
+            print("ERROR: Invalid amount.")
+            return
+        if not (0.01 <= amt <= 1000000):
+            print("ERROR: Invalid amount.")
+            return
+
+        # Check funds
+        source_balance = float(self.accounts[source_id]["balance"])
+        if amt > source_balance:
+            print("ERROR: Insufficient funds.")
+            return
+
+        # Perform transfer atomically on stored balances/history
+        self.accounts[source_id]["balance"] -= amt
+        self.accounts[source_id]["history"].append(f"Withdraw: {amt}")
+        self.accounts[dest_id]["balance"] += amt
+        self.accounts[dest_id]["history"].append(f"Deposited: {amt}")
+        print(
+            f"Transferred {amt} from account {source_id} to {dest_id}. "
+            f"New balances: {source_id}: {self.accounts[source_id]['balance']}, "
+            f"{dest_id}: {self.accounts[dest_id]['balance']}"
+        )
 
     ## Parses the input file and executes commands line by line
     # Function for processing input commands from a file
@@ -248,8 +275,7 @@ class BankSystem:
                 self.remove_account(args[0])
             else:
                 print(f"Unknown or malformed command: {line_to_process}")
-    
-    
+
     # Displays a list of available commands and their descriptions
     def print_help(self) -> None:
         print("help:")
@@ -262,6 +288,13 @@ class BankSystem:
         print("  transfer <source_id> <dest_id> <amount>  Transfer money")
         print("  balance <account_id>           Check account balance")
         print("  history <account_id>           View transaction history")
+
+
+    ##FOR TESTING 
+    #Removes everyting in storage
+    def clear_bank(self) -> None:
+        self.users: Dict[str, str] = {}
+        self.accounts: Dict[str, Dict[str, Any]] = {}
 
 
 def main() -> int:
