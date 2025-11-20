@@ -1,2 +1,0 @@
-create_user U0001 Alice
-create_user U0001 Alice

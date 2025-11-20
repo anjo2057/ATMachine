@@ -29,4 +29,16 @@ object_main.py <input2.txt>
 # There are 3 input files provided that can be changed.
 
 
+## Script for runnig all the tests and a combined report!
+
+# To run everyting first start the venv with coverage installed and then the following: 
+
+chmod +x scripts/run_coverage.sh
+
+./scripts/run_coverage.sh
+
+# For viewing of the coverage report
+
+open htmlcov/index.html
+
 

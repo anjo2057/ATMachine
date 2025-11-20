@@ -1,0 +1,6 @@
+[run]
+parallel = True
+
+[report]
+omit =
+    */site-packages/*

@@ -46,11 +46,9 @@ class BankSystem:
     # - ERROR: Invalid new name.
     def update_user(self, user_id: str, new_name: str) -> None:
         if user_id in self.users:
-            if new_name:
+            if isinstance(new_name, str) and new_name.strip():
                 self.users[user_id] = new_name
                 print("User updated:", user_id, new_name)
-            else:
-                print("ERROR: Invalid new name.")
         else:
             print("ERROR: User not found.")
 
@@ -61,13 +59,6 @@ class BankSystem:
     def delete_user(self, user_id: str) -> None:
         if user_id in self.users:
             del self.users[user_id]
-            to_remove = [
-                aid
-                for aid, meta in self.accounts.items()
-                if meta.get("user_id") == user_id
-            ]
-            for aid in to_remove:
-                del self.accounts[aid]
             print("User deleted:", user_id)
         else:
             print("ERROR: User not found.")
@@ -113,7 +104,6 @@ class BankSystem:
     # - ERROR: Account not found
     def deposit(self, account_id: str, amount: str) -> None:
         if account_id in self.accounts:
-            try:
                 amt = float(amount)
                 if 0.01 <= amt <= 1000000:
                     self.accounts[account_id]["balance"] += amt
@@ -123,8 +113,6 @@ class BankSystem:
                     )
                 else:
                     print("ERROR: Invalid amount.")
-            except ValueError:
-                print("ERROR: Invalid amount.")
         else:
             print("ERROR: Account not found")
 
@@ -163,22 +151,19 @@ class BankSystem:
     # - ERROR: Account not found.
     def withdraw(self, account_id: str, amount: str) -> None:
         if account_id in self.accounts:
-            try:
-                amt = float(amount)
-                bal = self.balance(account_id)
-                if bal is not None and 0.01 <= amt <= bal:
-                    self.accounts[account_id]["balance"] -= amt
-                    self.accounts[account_id]["history"].append(f"Withdraw: {amt}")
-                    print(
-                        f"Withdrew {amt} from account {account_id}. New balance: {self.accounts[account_id]['balance']}"
-                    )
-                else:
-                    if bal is not None and amt > bal:
-                        print("ERROR: insufficient funds.")
-                    if amt < 0.01:
-                        print("ERROR: Invalid amount")
-            except ValueError:
-                print("ERROR: Invalid amount")
+            amt = float(amount)
+            bal = self.balance(account_id)
+            if bal is not None and 0.01 <= amt <= bal:
+                self.accounts[account_id]["balance"] -= amt
+                self.accounts[account_id]["history"].append(f"Withdraw: {amt}")
+                print(
+                    f"Withdrew {amt} from account {account_id}. New balance: {self.accounts[account_id]['balance']}"
+                )
+            else:
+                if bal is not None and amt > bal:
+                    print("ERROR: insufficient funds.")
+                if amt < 0.01:
+                    print("ERROR: Invalid amount")
         else:
             print("ERROR: Account not found.")
 
@@ -205,11 +190,7 @@ class BankSystem:
             return
 
         # Validate amount
-        try:
-            amt = float(amount)
-        except ValueError:
-            print("ERROR: Invalid amount.")
-            return
+        amt = float(amount)
         if not (0.01 <= amt <= 1000000):
             print("ERROR: Invalid amount.")
             return
@@ -243,8 +224,8 @@ class BankSystem:
 
         for line in lines:
             line_to_process = line.strip()
-            if not line_to_process:
-                continue
+            # if not line_to_process:
+            #     continue
             parts = line_to_process.split()
             cmd = parts[0]
             args = parts[1:]
@@ -255,8 +236,13 @@ class BankSystem:
                 self.create_user(args[0], args[1])
             elif cmd == "read_user" and len(args) >= 1:
                 self.read_user(args[0])
-            elif cmd == "update_user" and len(args) >= 2:
-                self.update_user(args[0], args[1])
+            elif cmd == "update_user":
+                # print("args[1]:", args[1])
+                if len(args) < 2:
+                    print("ERROR: Invalid new name. Cant be empty")
+                    continue
+                elif len(args) >= 2:
+                    self.update_user(args[0], args[1])
             elif cmd == "delete_user" and len(args) >= 1:
                 self.delete_user(args[0])
             elif cmd == "deposit" and len(args) >= 2:
@@ -273,6 +259,8 @@ class BankSystem:
                 self.add_account(args[0], args[1])
             elif cmd == "remove_account" and len(args) >= 1:
                 self.remove_account(args[0])
+            elif cmd == "clear_bank":
+                self.clear_bank()
             else:
                 print(f"Unknown or malformed command: {line_to_process}")
 
@@ -289,9 +277,8 @@ class BankSystem:
         print("  balance <account_id>           Check account balance")
         print("  history <account_id>           View transaction history")
 
-
-    ##FOR TESTING 
-    #Removes everyting in storage
+    ##FOR TESTING
+    # Removes everyting in storage
     def clear_bank(self) -> None:
         self.users: Dict[str, str] = {}
         self.accounts: Dict[str, Dict[str, Any]] = {}

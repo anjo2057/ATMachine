@@ -1,3 +1,35 @@
+create_user U0001 Alice
+create_user U01 Bob
+create_user U0001 knutte
+read_user U0001
+read_user U0002
+update_user U0001 Alicia
+update_user U0002 Bille
+delete_user U0001
+delete_user U0002
+create_user U0001 Alice
+add_account U0001 AC001
+deposit AC001 500
+add_account U0001 AC002
+deposit AC002 -100
+deposit A002 200
+balance AC001
+balance AC002
+deposit AC001 500
+withdraw AC001 200
+history AC001
+history AC002
+withdraw AC001 200
+withdraw AC001 400
+withdraw AC002 100
+withdraw AC001 -400
+add_account U0001 AC002
+deposit AC001 500
+transfer AC001 AC002 200
+transfer AC001 AC002 400
+transfer AC003 AC002 100
+transfer AC002 AC003 100
+transfer AC001 AC001 100
 help
 create_user U0001 Alice
 read_user U0001
@@ -9,7 +41,16 @@ deposit AC001 500.00
 withdraw AC001 100.00
 add_account U0001 AC002
 transfer AC001 AC002 50.00
+transfer AC001 AC002 50000.00
+transfer AC001 AC002 -50.00
 balance AC001
 history AC001
 remove_account AC002
 hejsansvejsa
+update_user AC001
+add_account UUU01 AC007
+remove_account BC001
+balance BC001
+history BC001
+withdraw AC009 400
+clear_bank
